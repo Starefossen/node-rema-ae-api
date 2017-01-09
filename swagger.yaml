@@ -1,0 +1,177 @@
+swagger: '2.0'
+info:
+  title: Rema 1000 "Æ" API
+  description: API backing the Rema 1000 "Æ" application for iPhone and Android
+  version: "N/A"
+# the domain of the service
+host: api.rema.no
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /
+produces:
+  - application/json
+paths:
+  /gordo/topList/{userid}:
+    get:
+      summary: Top Products
+      description: |
+        Returns a list of your top 10 purchased products.
+      parameters:
+        - name: Ocp-Apim-Subscription-Key
+          in: header
+          description: API subscription key
+          required: true
+          type: string
+        - name: userid
+          in: path
+          description: User ID
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Products
+      responses:
+        '200':
+          description: An array of products
+          schema:
+            type: array
+            scorecard:
+              $ref: '#/definitions/Product'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /gordo/offers/{userid}:
+    get:
+      summary: Product Offers
+      description: |
+        Returns a list of current product offers.
+      parameters:
+        - name: Ocp-Apim-Subscription-Key
+          in: header
+          description: API subscription key
+          required: true
+          type: string
+        - name: userid
+          in: path
+          description: User ID
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Offers
+      responses:
+        '200':
+          description: An array of products
+          schema:
+            name: offers
+            type: array
+            items:
+              $ref: '#/definitions/Offer'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /gordo/heads/{userid}:
+    get:
+      summary: Saving Overview
+      description: Returns
+      parameters:
+        - name: Ocp-Apim-Subscription-Key
+          in: header
+          description: API subscription key
+          required: true
+          type: string
+        - name: userid
+          in: path
+          description: User ID
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Transactions
+      responses:
+        '200':
+          description: An array of products
+          schema:
+            $ref: '#/definitions/Overview'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  Product:
+    type: object
+
+  Overview:
+    type: object
+    properties:
+      bonusTotal:
+        type: number
+        format: integer
+      discountTotal:
+        type: number
+        format: double
+      purchaseTotal:
+        type: number
+        format: double
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/Transaction'
+
+  Transaction:
+    type: object
+    properties:
+      test:
+        type: string
+
+  Offer:
+    type: object
+    properties:
+      alwaysDisplay:
+        type: boolean
+      code:
+        type: string
+      combinable:
+        type: boolean
+      currencyCode:
+        type: string
+      desc:
+        type: string
+        description: Offer title
+      dutyText:
+        type: string
+        description: Offer Illustration
+      internalDescription:
+        type: string
+        description: Full offer description
+      note:
+        type: string
+        description: Offer subheading
+      preselected:
+        type: string
+      type:
+        type: Object
+        description: Offer type
+      unit:
+        type: String
+        description: Precentage or absolute amount
+      value:
+        type: number
+        format: double
+        description: Offer ammount
+
+  Error:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+      message:
+        type: string
